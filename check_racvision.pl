@@ -10,7 +10,7 @@ use Data::Dumper;
 
 my $plugin = Nagios::Plugin->new(
 	usage 	=> "Usage: %s -H <host> -T <TestId> -a <application-id> [-P <path>] [-p <http_port>] [-S]",
-	version => '0.2',
+	version => '0.3',
 	blurb	=> 'Script to check racvision XML',
 	plugin	=> 'check_racvision',
 	url		=> 'Created by Marc GUYARD <m.guyard@orange-ftgroup.com>',
@@ -100,14 +100,16 @@ print "DEBUG :: \nSource HTML : \n".$source."\n\n\n" if $verbose;
 ################
 
 my $xml = new XML::Simple;
-my $data = $xml->XMLin( $source , forcearray => 1 , KeyAttr => ['id'] );
+my $data = $xml->XMLin( $source , forcearray => 1 , KeyAttr => ['id'] , suppressempty => '' );
 print "XML Dump\n****************\n".Dumper($data)."\n\n\n" if $verbose ;
 
 foreach my $testid (@tab_testid) {
 	print "DEBUG :: TestID => ".$testid."\n" if $verbose;
-	print "DEBUG :: ".$data->{application}->{$application}->{test}->{$testid}->{state}->[0]->{val}."\n" if $verbose;
-	if (( $data->{application}->{$application}->{test}->{$testid}->{result}->[0] ) && (undef($data->{application}->{$application}->{test}->{$testid}->{result}->[0])) && ( $verbose )) {
-		print "DEBUG :: Result => $data->{application}->{$application}->{test}->{$testid}->{result}->[0]\n";
+	print "DEBUG :: Value => ".$data->{application}->{$application}->{test}->{$testid}->{state}->[0]->{val}."\n" if $verbose;
+	if ( $data->{application}->{$application}->{test}->{$testid}->{result}->[0] ) {
+		print "DEBUG :: Result => $data->{application}->{$application}->{test}->{$testid}->{result}->[0]\n" if $verbose;
+	} else {
+		print "DEBUG :: Result => No result available\n" if $verbose;
 	}
 	my $result = $data->{application}->{$application}->{test}->{$testid}->{state}->[0]->{val};
 	my $description_testid = $data->{application}->{$application}->{test}->{$testid}->{description}->[0];
