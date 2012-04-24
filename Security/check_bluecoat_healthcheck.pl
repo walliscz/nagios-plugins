@@ -49,7 +49,7 @@ $plugin->getopts();
 my $opts = $plugin->opts();
 
 $SIG{ALRM} = sub {
-	$plugin->nagios_exit(UNKNOWN, "Timeout reached");
+	$plugin->nagios_exit(CRITICAL, "Timeout reached");
 };
 alarm $opts->get('timeout');
 
