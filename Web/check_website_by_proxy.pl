@@ -14,7 +14,7 @@ use Switch;
 # Definition des options
 my $plugin = Nagios::Plugin->new(
 	usage 	=> "Usage: %s -p <proxy> -l <Proxy_Port> [-o <Proxy_User>] [-m <Proxy_Pass>] -u <url> [-n <Url_User>] [-s <Url_Pass>] [-e <status>] [-r <regex>]",
-	version => '0.1',
+	version => '0.2',
 	blurb	=> 'Script to check website by proxy',
 	plugin	=> 'check_website_by_proxy.pl',
 	url	=> 'Created by Marc GUYARD <m.guyard@orange.com>',
@@ -114,7 +114,7 @@ my $verbose			= $opts->get('verbose');
 
 # Recuperation de la page
 my $mech = WWW::Mechanize::Timed->new(
-	agent => 'Backup NSOC NIS' ,
+	agent => 'Supervision NSOC NIS' ,
 	autocheck => 0
 );
 # Definition du proxy
