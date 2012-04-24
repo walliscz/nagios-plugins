@@ -14,7 +14,7 @@ use Switch;
 # Definition des options
 my $plugin = Nagios::Plugin->new(
 	usage 	=> "Usage: %s -H <host> -P <webUI_Port> -u <username> -p <password>",
-	version => '0.1',
+	version => '0.2',
 	blurb	=> 'Script to check Bluecoat Health-Check Status',
 	plugin	=> 'check_bluecoat_healthcheck.pl',
 	url	=> 'Created by Marc GUYARD <m.guyard@orange.com>',
@@ -121,5 +121,5 @@ $plugin->add_perfdata(
 	uom => "",
 );
 
-my ($code, $message) = $plugin->check_messages();
+my ($code, $message) = $plugin->check_messages(join => ' / ', ok => 'All Health-Check are OK');
 $plugin->nagios_exit($code, $message);
