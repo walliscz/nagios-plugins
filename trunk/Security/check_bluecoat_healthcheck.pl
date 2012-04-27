@@ -14,7 +14,7 @@ use Switch;
 # Definition des options
 my $plugin = Nagios::Plugin->new(
 	usage 	=> "Usage: %s -H <host> -P <webUI_Port> -u <username> -p <password>",
-	version => '0.2',
+	version => '0.3',
 	blurb	=> 'Script to check Bluecoat Health-Check Status',
 	plugin	=> 'check_bluecoat_healthcheck.pl',
 	url	=> 'Created by Marc GUYARD <m.guyard@orange.com>',
@@ -61,8 +61,9 @@ my $password		= $opts->get('password');
 my $verbose			= $opts->get('verbose');
 
 # Recuperation du XML des Health-Check
+$ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0; # Permet de ne plus verifier le certificat
 my $mech = WWW::Mechanize->new(
-	agent => 'Backup NSOC NIS' ,
+	agent => 'Supervision NSOC NIS' ,
 	autocheck => 0
 );
 my $XML_HealthCheck_URL = "https://".$host.":".$port."/health_check/statistics_xml";
@@ -73,7 +74,7 @@ if ( $mech->success ) {
 	print "DEBUG : XML Health-Check retreived" if $verbose;
 	$XML_HealthCheck_Content = $mech->content();
 } else {
-	$plugin->nagios_exit(CRITICAL, "Failed to retreive the XML Health-Check status");
+	$plugin->nagios_exit(CRITICAL, "Failed to retreive the XML Health-Check status with error (".$mech->response->status_line.")");
 }
 
 # Parsing du XML
