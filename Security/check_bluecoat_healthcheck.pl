@@ -14,7 +14,7 @@ use Switch;
 # Definition des options
 my $plugin = Nagios::Plugin->new(
 	usage 	=> "Usage: %s -H <host> -P <webUI_Port> -u <username> -p <password>",
-	version => '0.3',
+	version => '0.4',
 	blurb	=> 'Script to check Bluecoat Health-Check Status',
 	plugin	=> 'check_bluecoat_healthcheck.pl',
 	url	=> 'Created by Marc GUYARD <m.guyard@orange.com>',
@@ -95,15 +95,17 @@ foreach my $HealthCheck (@{$XML_HealthCheck->{HealthCheck}}) {
 				$plugin->add_message( CRITICAL, "The Health-Check ".$HealthCheck->{Name}." is in state ".$HealthCheck->{Status}." with message '".$HealthCheck->{Health}."' (Type : ".$HealthCheck->{Type}.")" );
 				$HealthCheck_Error += 1;
 			} else {
-				$plugin->add_message( OK, "The Health-Check ".$HealthCheck->{Name}." is in state ".$HealthCheck->{Status}." with message '".$HealthCheck->{Health}."' (Type : ".$HealthCheck->{Type}.")" );
+				$plugin->add_message( OK, "The Health-Check ".$HealthCheck->{Name}." is in state ".$HealthCheck->{Status}." with message '".$HealthCheck->{Health}."' (Type : ".$HealthCheck->{Type}.")" ) if $verbose;
 				$HealthCheck_OK += 1;
 			}
 		} else {
-			$plugin->add_message( OK, "The Health-Check ".$HealthCheck->{Name}." is in state ".$HealthCheck->{Status}." with message '".$HealthCheck->{Health}."' (Type : ".$HealthCheck->{Type}.")" );
+			$plugin->add_message( OK, "The Health-Check ".$HealthCheck->{Name}." is '".$HealthCheck->{Enable}."' (Type : ".$HealthCheck->{Type}.")" ) if $verbose;
 			$HealthCheck_Disabled += 1;
 		}
 	}
 }
+
+
 
 # Performance
 $plugin->add_perfdata(
