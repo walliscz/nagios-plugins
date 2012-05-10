@@ -14,7 +14,7 @@ use Switch;
 # Definition des options
 my $plugin = Nagios::Plugin->new(
 	usage 	=> "Usage: %s -p <proxy> -l <Proxy_Port> [-o <Proxy_User>] [-m <Proxy_Pass>] -u <url> [-n <Url_User>] [-s <Url_Pass>] [-e <status>] [-r <regex>]",
-	version => '0.2',
+	version => '0.3',
 	blurb	=> 'Script to check website by proxy',
 	plugin	=> 'check_website_by_proxy.pl',
 	url	=> 'Created by Marc GUYARD <m.guyard@orange.com>',
@@ -124,6 +124,8 @@ my $header = HTTP::Headers->new();
 # Ajout des entetes de connexion proxy et website
 $header->proxy_authorization_basic($proxy_user,$proxy_pass) if $proxy_user;
 $header->authorization_basic($url_user, $url_pass) if $url_user;
+# Desactive la compression de la reponse en GZIP
+$header->header( 'Accept-Encoding' => 'identity'); 
 my $request = HTTP::Request->new('GET', $url, $header);
 
 # Appel de l'URL
