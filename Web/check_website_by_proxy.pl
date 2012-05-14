@@ -9,6 +9,7 @@ use Data::Dumper;
 use WWW::Mechanize::Timed;
 use HTTP::Headers;
 use HTTP::Request::Common qw(POST GET);
+use HTTP::Status qw(:constants :is status_message);
 use Switch;
 
 # Definition des options
@@ -131,8 +132,12 @@ my $request = HTTP::Request->new('GET', $url, $header);
 # Appel de l'URL
 my $threshold_status;
 my $result = $mech->request($request);
+print "Operation Result : ".$mech->success."\n" if $verbose;
+print "Status Return : ".$result->status_line."\n" if $verbose;
+print "Expected Status : ".$status."\n\n\n" if $verbose;
 print "Content :\n\n".$result->content."\n\n" if $verbose;
-if ( $mech->success ) {
+# Verifie que le code HTTP n'est pas 5xx
+if ( ! is_server_error($result->status_line) ) {
 	# Verifie si le code de retour correspond a celui attendu
 	if ($result->status_line =~ /^$status/) {
 		# Une regex de test a etait saisi ?
@@ -160,7 +165,7 @@ if ( $mech->success ) {
 	$threshold_status = $threshold->get_status($mech->client_total_time);
 	print "Threshold Status : ".$threshold_status."\n" if $verbose;
 } else {
-	$plugin->nagios_exit(CRITICAL, "Failed to retreive the URL '".$url."'");
+	$plugin->nagios_exit(CRITICAL, "Failed to retreive the URL '".$url."' (".$result->status_line.")");
 }
 
 # Debug Time
