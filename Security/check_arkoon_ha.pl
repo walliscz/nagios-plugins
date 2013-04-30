@@ -53,7 +53,7 @@ $plugin->getopts();
 my $opts = $plugin->opts();
 
 $SIG{ALRM} = sub {
-	$plugin->nagios_exit(UNKNOWN, "Timeout reached");
+	$plugin->nagios_exit(CRITICAL, "Timeout reached");
 };
 alarm $opts->get('timeout');
 
@@ -73,11 +73,11 @@ sub nagios_end {
 
 # Validation de parametres
 if ($ha_type !~ /^(akha|vrrp)$/ ) {
-	$plugin->nagios_exit(UNKNOWN, "Invalid HA Type Argument (".$ha_type.") - Only akha (Arkoon v4) or vrrp (Arkoon v5) is valid");
+	$plugin->nagios_exit(WARNING, "Invalid HA Type Argument (".$ha_type.") - Only akha (Arkoon v4) or vrrp (Arkoon v5) is valid");
 	&nagios_end;
 }
 if ($ha_state !~ /^(active|passive)$/ ) {
-	$plugin->nagios_exit(UNKNOWN, "Invalid HA State Argument (".$ha_state.") - Only active or passive is valid");
+	$plugin->nagios_exit(WARNING, "Invalid HA State Argument (".$ha_state.") - Only active or passive is valid");
 	&nagios_end;
 }
 
