@@ -95,7 +95,7 @@ $plugin->getopts();
 my $opts = $plugin->opts();
 
 $SIG{ALRM} = sub {
-	$plugin->nagios_exit(UNKNOWN, "Timeout reached");
+	$plugin->nagios_exit(CRITICAL, "Timeout reached");
 };
 alarm $opts->get('timeout');
 
@@ -179,7 +179,7 @@ print "Total Time : ".$mech->client_total_time."\n" if $verbose;
 switch ($threshold_status) {
 	case 1 { $plugin->add_message(WARNING, "-- Threshold (".$warning."s) excedeed - ".$mech->client_total_time."s"); }
 	case 2 { $plugin->add_message(CRITICAL, "-- Threshold (".$critical."s) excedeed - ".$mech->client_total_time."s"); }
-	case 3 { $plugin->add_message(UNKNOWN, "Unknown ERROR"); }
+	case 3 { $plugin->add_message(CRITICAL, "Unknown ERROR"); }
 }
 
 # Performance
