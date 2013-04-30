@@ -62,7 +62,7 @@ $plugin->getopts();
 my $opts = $plugin->opts();
 
 $SIG{ALRM} = sub {
-	$plugin->nagios_exit(UNKNOWN, "Timeout reached");
+	$plugin->nagios_exit(CRITICAL, "Timeout reached");
 };
 alarm $opts->get('timeout');
 
@@ -92,7 +92,7 @@ if ( $ssl ) {
 $url = $http_type."://".$host.":".$port.$path;
 print "DEBUG :: Url = ".$url."\n" if $verbose;
 $mech->get( $url );
-$mech->success or $plugin->nagios_exit(UNKNOWN, "No response from server (".$url.")");
+$mech->success or $plugin->nagios_exit(CRITICAL, "No response from server (".$url.")");
 my $source = $mech->content;
 print "DEBUG :: \nSource HTML : \n".$source."\n\n\n" if $verbose;
 
