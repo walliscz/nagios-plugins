@@ -51,7 +51,7 @@ $plugin->getopts();
 my $opts = $plugin->opts();
 
 $SIG{ALRM} = sub {
-	$plugin->nagios_exit(UNKNOWN, "Timeout reached");
+	$plugin->nagios_exit(CRITICAL, "Timeout reached");
 };
 alarm $opts->get('timeout');
 
@@ -70,10 +70,10 @@ my ($session, $error) = Net::SNMP->session(
 		-community	=> $community,
 		-version	=> $snmpver,
 );
-$plugin->nagios_exit(UNKNOWN, "No response from server ".$host." (Error: ".$error.")") unless ( $session );
+$plugin->nagios_exit(CRITICAL, "No response from server ".$host." (Error: ".$error.")") unless ( $session );
 my $disksize_result = $session->get_request( -varbindlist => [ $oid_disksize ] );
 if (!defined $disksize_result) {
-	$plugin->nagios_exit(UNKNOWN, "Unable to bind oid DiskSize (".$oid_disksize.")");
+	$plugin->nagios_exit(WARNING, "Unable to bind oid DiskSize (".$oid_disksize.")");
 	print "DEBUG: ".$session->error() if $verbose;
 	$session->close();
 	exit 1;
@@ -87,7 +87,7 @@ if ( $disk_size eq 0 ) {
 } else {
 	my $diskusage_result = $session->get_request( -varbindlist => [ $oid_diskusage ] );
 	if (!defined $disksize_result) {
-		$plugin->nagios_exit(UNKNOWN, "Unable to bind oid DiskUsage (".$oid_disksize.")");
+		$plugin->nagios_exit(WARNING, "Unable to bind oid DiskUsage (".$oid_disksize.")");
 		print "DEBUG: ".$session->error() if $verbose;
 		$session->close();
 		exit 1;
@@ -129,7 +129,7 @@ if ( $disk_size eq 0 ) {
 		case 0 { $plugin->add_message(OK, $disk_percent."%"); }
 		case 1 { $plugin->add_message(WARNING, "threshold (".$warning_threshold."%) excedeed - ".$disk_percent." %"); }
 		case 2 { $plugin->add_message(CRITICAL, "threshold (".$critical_threshold.") excedeed - ".$disk_percent." %"); }
-		case 3 { $plugin->add_message(UNKNOWN, "Unknown error"); }
+		case 3 { $plugin->add_message(CRITICAL, "Unknown error"); }
 	}
 
 }
