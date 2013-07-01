@@ -118,8 +118,12 @@ my $mech = WWW::Mechanize::Timed->new(
 	agent => 'Supervision NSOC NIS' ,
 	autocheck => 0
 );
-# Definition du proxy
+# Definition du proxy HTTP/FTP
 $mech->proxy(['http', 'ftp'], "http://".$proxy.":".$proxy_port);
+# Definition du proxy HTTPS
+$ENV{HTTPS_PROXY} = "http://".$proxy.":".$proxy_port;
+$ENV{HTTPS_PROXY_USERNAME} = $proxy_user;
+$ENV{HTTPS_PROXY_PASSWORD} = $proxy_pass;
 my $header = HTTP::Headers->new();
 
 # Ajout des entetes de connexion proxy et website
