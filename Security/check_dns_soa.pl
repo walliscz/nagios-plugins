@@ -86,7 +86,6 @@ foreach my $nameserver (@nameservers) {
 	my $query        = $objChildResolve->query("$domain", "SOA");
 	foreach my $rr (grep { $_->type eq 'SOA' } $query->answer) {
 		my $childserial = $rr->serial;
-		$childserial = "0";
 		print "Serial number from $nameserver is $childserial\n" if $verbose;
 		if ($childserial != $master) {
 			$plugin->add_message( CRITICAL, $nameserver." serves Serial ".$childserial." not ".$master);
